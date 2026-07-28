@@ -1871,7 +1871,7 @@ int enummidiports (void)
 		}
 	}
 
-	write_log (_T("MIDI port enumeration  end\n"));
+	write_log (_T("MIDI port enumeration end\n"));
 
 	return total;
 }
