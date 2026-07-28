@@ -1348,8 +1348,14 @@ int readseravail(bool *breakcond)
 				tcp_disconnect ();
 				return 0;
 			}
-			if (err > 0)
+			if (err > 0) {
+				// AXEL-DIAG: socket has readable data
+				static int axel_avlog;
+				if (axel_avlog++ < 50) {
+					write_log (_T("SERIAL-DIAG: TCP data available\n"));
+				}
 				return 1;
+			}
 		}
 		return 0;
 	} else if (midi_ready) {
@@ -1386,7 +1392,11 @@ int readser (int *buffer)
 			int err = recv (serialconn, buf, 1, 0);
 			if (err == 1) {
 				*buffer = buf[0];
-				//write_log(_T(" %02X "), buf[0]);
+				// AXEL-DIAG: byte pulled from socket
+				static int axel_rxlog;
+				if (axel_rxlog++ < 100) {
+					write_log(_T("SERIAL-DIAG: TCP recv %02X\n"), (uae_u8)buf[0]);
+				}
 				return 1;
 			} else {
 				tcp_disconnect ();
