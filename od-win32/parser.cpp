@@ -1336,7 +1336,13 @@ int readseravail(bool *breakcond)
 	if (breakcond)
 		*breakcond = false;
 	if (tcpserial) {
-		if (tcp_is_connected ()) {
+		// AXEL-DIAG v2: prove this function runs and knows its connection state
+		bool axel_conn = tcp_is_connected ();
+		static int axel_calllog;
+		if ((axel_calllog++ & 4095) == 0) {
+			write_log(_T("SERIAL-DIAG: readseravail alive, connected=%d\n"), axel_conn ? 1 : 0);
+		}
+		if (axel_conn) {
 			struct timeval tv;
 			fd_set fd;
 			tv.tv_sec = 0;
